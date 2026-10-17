@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PawTag | Create Pet ID & QR | PetVora</title>
+<meta name="theme-color" content="#1668C7">
+<link rel="icon" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.intro{text-align:center;padding:18px 0 8px}
+.intro h1{font-size:clamp(2.4rem,10vw,3.8rem);font-weight:900;color:var(--pdark)}
+.intro p{margin-top:10px;color:var(--soft)}
+form .card{margin-top:18px}
+label{display:block;font-weight:700;margin:16px 0 6px}
+label:first-child{margin-top:0}
+label small{font-weight:400;color:var(--soft)}
+input,select,textarea{width:100%;padding:14px 16px;border-radius:16px;border:2px solid var(--line);background:#fff;color:#0B2A5B;font-size:1rem}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);outline:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.breedrow{display:flex;gap:14px;align-items:center}
+.breedrow img{flex:none;width:74px;height:74px;border-radius:50%;border:5px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.25);object-fit:cover;background:#fff}
+.hint{font-size:.9rem;color:var(--soft);margin-top:6px}
+.ok{color:#0f7a37;font-weight:700}
+.err{background:#fee2e2;color:#991b1b;border-radius:14px;padding:12px 14px;margin-top:16px;display:none;font-weight:500}
+.thumb{margin-top:10px;max-height:150px;border-radius:14px}
+.result{display:none;text-align:center}
+.result canvas{width:min(320px,86%);height:auto;border-radius:18px;border:1px solid var(--line);background:#fff;margin:14px auto}
+.result .id{font-family:var(--display);font-weight:900;font-size:2rem;color:var(--pdark)}
+.stack{display:grid;gap:12px;margin-top:14px}
+.gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
+.gate .box{width:min(380px,100%)}
+.gate img{width:120px;height:120px;margin:0 auto 14px;border-radius:50%;background:#fff;box-shadow:0 10px 26px rgba(0,0,0,.2)}
+.gate h1{font-size:2rem;color:var(--pdark);margin-bottom:6px}
+.gate input{text-align:center;margin:18px 0 12px;letter-spacing:.1em}
+.gate .err{display:none;margin:0 0 12px}
+body.locked main,body.locked footer,body.locked header.top{display:none}
+.status{font-size:.95rem;margin-top:8px;color:var(--soft)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+.themes input{position:absolute;opacity:0;pointer-events:none}
+.th{display:block;margin:0;cursor:pointer;text-align:center;font-weight:600;font-size:.85rem}
+.mini{height:170px;border-radius:20px;border:3px solid transparent;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:10px 8px;box-shadow:0 10px 20px -12px rgba(0,0,0,.5);transition:transform .15s}
+.mini i{position:absolute;top:10px;left:50%;width:62px;height:62px;margin-left:-31px;border-radius:50%;background:rgba(255,255,255,.35);display:grid;place-items:center}
+.mini i svg{width:30px;height:30px;opacity:.7}
+.mini em{font-family:var(--display);font-style:normal;font-weight:900;font-size:1.5rem;line-height:1;text-align:left}
+.mini span{display:flex;gap:4px;margin-top:8px}.mini span u{flex:1;aspect-ratio:1;border-radius:50%;border:1px solid currentColor;opacity:.6;max-width:28px}
+.m-night{background:linear-gradient(180deg,#0a2a63,#050f26);color:#fff}.m-night em b{color:#FFD54A}
+.m-ivory{background:linear-gradient(180deg,#FBF8F2,#F0E8DA);color:#161616;border-color:rgba(0,0,0,.08)}.m-ivory em b{color:#22c55e}
+.m-gold{background:linear-gradient(180deg,#0d0b08,#1b140a);color:#E8C26A}
+.themes input:checked+.mini{border-color:var(--primary);transform:scale(1.04)}
+.themes input:checked+.mini::after{content:"\2713";position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:.85rem}
+.themes input:focus-visible+.mini{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body class="locked">
+<div class="gate" id="gate"><div class="box">
+  <img src="/img/petvora_logo.png" alt="PetVora">
+  <h1>PetVora PawTag</h1>
+  <p class="lead">Enter the PIN to open the website.</p>
+  <input id="pin" type="password" autocomplete="off" placeholder="PIN">
+  <div class="err" id="pinErr" role="alert">Wrong PIN. Please try again.</div>
+  <button class="btn btn-main" id="pinGo" style="width:100%">Open website</button>
+</div></div>
+<div class="paws" id="paws" aria-hidden="true"></div>
+<header class="top"><img src="/img/petvora_logo.png" alt="PetVora"><div><b>PetVora</b><small>Smarter Technology for Happier Pets</small></div></header>
+<main class="wrap">
+  <div class="intro"><h1>Create a Pet ID</h1><p>Fill in the details. You will get a QR code that opens your pet's ID page.</p></div>
+
+  <form id="f" novalidate>
+    <div class="card">
+      <label for="name">Dog's name</label>
+      <input id="name" maxlength="40" autocomplete="off" placeholder="For example: Bruno">
+      <label for="photo">Dog photo <small>(the breed is found from this photo)</small></label>
+      <input id="photo" type="file" accept="image/*">
+      <img id="photoPrev" class="thumb" alt="" hidden>
+      <label for="breed">Breed</label>
+      <div class="breedrow"><img id="bimg" src="/img/petvora_logo.png" alt=""><select id="breed"></select></div>
+      <p class="status" id="breedMsg">Choose the photo first. The breed will be filled in for you. You can change it.</p>
+      <div id="otherwrap" style="display:none"><label for="breedName">Type the breed</label><input id="breedName" maxlength="40" placeholder="For example: Pug"></div>
+      <div class="row"><div><label for="gender">Gender</label><select id="gender"><option>Male</option><option>Female</option></select></div>
+      <div><label for="color">Colour</label><input id="color" maxlength="30" placeholder="Golden"></div></div>
+      <label>Age now</label>
+      <div class="row"><input id="ay" type="number" min="0" max="30" inputmode="numeric" placeholder="Years"><input id="am" type="number" min="0" max="11" inputmode="numeric" placeholder="Months"></div>
+      <p class="hint">Example: 1 year and 0 months. The page will add the days by itself.</p>
+    </div>
+
+    <div class="card">
+      <label>Choose the ID design</label>
+      <div class="themes"><label class="th"><input type="radio" name="theme" value="night" checked><span class="mini m-night"><i><svg viewBox="0 0 64 64" fill="currentColor"><ellipse cx="32" cy="42" rx="14" ry="11"/><ellipse cx="14" cy="26" rx="6" ry="8"/><ellipse cx="26" cy="17" rx="6" ry="8.5"/><ellipse cx="38" cy="17" rx="6" ry="8.5"/><ellipse cx="50" cy="26" rx="6" ry="8"/></svg></i><em>Name<b>.</b></em><span><u></u><u></u><u></u></span></span>Midnight Blue</label><label class="th"><input type="radio" name="theme" value="ivory"><span class="mini m-ivory"><i><svg viewBox="0 0 64 64" fill="currentColor"><ellipse cx="32" cy="42" rx="14" ry="11"/><ellipse cx="14" cy="26" rx="6" ry="8"/><ellipse cx="26" cy="17" rx="6" ry="8.5"/><ellipse cx="38" cy="17" rx="6" ry="8.5"/><ellipse cx="50" cy="26" rx="6" ry="8"/></svg></i><em>Name<b>.</b></em><span><u></u><u></u><u></u></span></span>Ivory Bloom</label><label class="th"><input type="radio" name="theme" value="gold"><span class="mini m-gold"><i><svg viewBox="0 0 64 64" fill="currentColor"><ellipse cx="32" cy="42" rx="14" ry="11"/><ellipse cx="14" cy="26" rx="6" ry="8"/><ellipse cx="26" cy="17" rx="6" ry="8.5"/><ellipse cx="38" cy="17" rx="6" ry="8.5"/><ellipse cx="50" cy="26" rx="6" ry="8"/></svg></i><em>Name<b>.</b></em><span><u></u><u></u><u></u></span></span>Royal Gold</label></div>
+      <p class="hint">This is how your dog's ID page will look when the QR code is scanned.</p>
+    </div>
+
+    <div class="card">
+      <label for="ownerName">Owner name</label>
+      <input id="ownerName" maxlength="60" placeholder="Your name">
+      <label for="phone">Phone number</label>
+      <input id="phone" type="tel" inputmode="tel" maxlength="20" placeholder="10 digit mobile number">
+      <label for="address">Home area / address <small>(optional)</small></label>
+      <textarea id="address" rows="2" maxlength="200" placeholder="Area, city"></textarea>
+      <label>Map location</label>
+      <button type="button" class="btn btn-line" id="gps" style="width:100%">&#128205; Use my current location</button>
+      <p class="hint" id="gpsMsg">Stand at your home and tap this button. If you skip it, the address above is used.</p>
+      <label for="mapLink">Or paste a Google Maps link <small>(optional)</small></label>
+      <input id="mapLink" inputmode="url" placeholder="https://maps.app.goo.gl/...">
+    </div>
+
+    <div class="card">
+      <label for="vaccine">Vaccination card photo <small>(optional)</small></label>
+      <input id="vaccine" type="file" accept="image/*">
+      <img id="vacPrev" class="thumb" alt="" hidden>
+      <label for="notes">Story <small>(one or two lines about your dog)</small></label>
+      <textarea id="notes" rows="2" maxlength="160" placeholder="Friendly Beagle who loves walks, treats and meeting new people."></textarea>
+    </div>
+
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn btn-main" id="go" style="width:100%;margin-top:18px" type="submit">Create Dog ID &amp; QR code</button>
+  </form>
+
+  <section class="card result" id="res" style="margin-top:18px">
+    <h2 id="rname"></h2>
+    <p class="lead">Your Pet ID is ready. Print this QR code or save it.</p>
+    <div class="id" id="rid"></div>
+    <canvas id="qr" width="10" height="10"></canvas>
+    <div class="stack">
+      <button class="btn btn-main" id="dl">Download QR code</button>
+      <a class="btn btn-line" id="open" target="_blank" rel="noopener">Open the ID page</a>
+      <button class="btn btn-line" id="copy">Copy the link</button>
+      <button class="btn btn-line" id="again">Make another ID</button>
+    </div>
+    <p class="hint" style="margin-top:14px">Save the QR code. This QR never expires.</p>
+  </section>
+</main>
+<footer><img src="/img/petvora_logo.png" alt="PetVora"><b style="font-family:var(--display);font-size:1.3rem;color:var(--ink)">PetVora PawTag</b></footer>
+
+<script src="/js/qrcode.js"></script>
+<script src="/js/common.js"></script>
+<script>
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  PV.mountPaws($("paws"), "PETVORA", 14);
+  var gate = $("gate"), PIN = "";
+  function unlock(p) { PIN = p; try { sessionStorage.setItem("pv_pin", p); } catch (e) {} document.body.classList.remove("locked"); gate.style.display = "none"; }
+  async function tryPin(p, quiet) {
+    try {
+      var r = await fetch("/api/verify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ pin: p }) });
+      if (r.ok) return unlock(p);
+    } catch (e) { if (!quiet) { $("pinErr").textContent = "No internet. Please try again."; $("pinErr").style.display = "block"; } return; }
+    try { sessionStorage.removeItem("pv_pin"); } catch (e) {}
+    if (!quiet) { $("pinErr").textContent = "Wrong PIN. Please try again."; $("pinErr").style.display = "block"; }
+  }
+  $("pinGo").onclick = function () { tryPin($("pin").value, false); };
+  $("pin").onkeydown = function (e) { if (e.key === "Enter") $("pinGo").click(); };
+  try { var sp = sessionStorage.getItem("pv_pin"); if (sp) tryPin(sp, true); } catch (e) {}
+
+  /* breed list */
+  var sel = $("breed");
+  sel.innerHTML = '<option value="">Select breed</option>' + PV.BREEDS.map(function (b) { return '<option>' + b + '</option>'; }).join("") + '<option value="__other">Other (type the name)</option>';
+
+  var photo = "", vaccine = "", lat = "", lng = "";
+  function currentBreed() { return sel.value === "__other" ? $("breedName").value.trim() : sel.value; }
+  function updateSticker() {
+    var k = PV.breedKey(currentBreed());
+    $("bimg").src = k ? PV.STICKERS[k] : (photo || "/img/petvora_logo.png");
+    $("otherwrap").style.display = sel.value === "__other" ? "block" : "none";
+  }
+  sel.onchange = updateSticker; $("breedName").oninput = updateSticker;
+
+  /* find the breed from the photo (runs in the phone, free) */
+  var model = null;
+  function loadScript(src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+  async function detect(dataUrl) {
+    var msg = $("breedMsg"); msg.textContent = "Checking the breed from the photo... please wait.";
+    try {
+      if (!window.tf) await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js");
+      if (!window.mobilenet) await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js");
+      if (!model) model = await mobilenet.load({ version: 1, alpha: 1.0 });
+      var img = new Image(); img.src = dataUrl; await img.decode();
+      var preds = await model.classify(img, 5);
+      for (var i = 0; i < preds.length; i++) {
+        var nm = PV.niceBreed(preds[i].className);
+        if (PV.isBreed(nm)) { sel.value = nm; updateSticker(); msg.textContent = "This looks like a " + nm + ". Please check it and change it if it is wrong."; return; }
+      }
+      msg.textContent = "The breed could not be found from this photo. Please choose it from the list.";
+    } catch (e) { msg.textContent = "Automatic breed check is not available now. Please choose the breed from the list."; }
+  }
+
+  function pick(inputId, prevId, side, q, set, after) {
+    $(inputId).onchange = async function () {
+      var f = this.files[0]; if (!f) { set(""); $(prevId).hidden = true; return; }
+      try { var d = await PV.compress(f, side, q); set(d); $(prevId).src = d; $(prevId).hidden = false; if (after) after(d); }
+      catch (e) { showErr("This photo could not be read. Please choose another photo."); }
+    };
+  }
+  pick("photo", "photoPrev", 900, 0.82, function (d) { photo = d; }, function (d) { updateSticker(); detect(d); });
+  pick("vaccine", "vacPrev", 1300, 0.8, function (d) { vaccine = d; });
+
+  $("gps").onclick = function () {
+    var m = $("gpsMsg");
+    if (!navigator.geolocation) { m.textContent = "Location is not available on this phone. Use the address or map link."; return; }
+    m.textContent = "Finding your location... please allow it when the phone asks.";
+    navigator.geolocation.getCurrentPosition(function (p) {
+      lat = p.coords.latitude.toFixed(6); lng = p.coords.longitude.toFixed(6);
+      m.innerHTML = '<span class="ok">Location saved.</span> The map button will open this place.';
+    }, function () { m.textContent = "Could not get location. Please allow location access, or use the address or map link."; },
+    { enableHighAccuracy: true, timeout: 15000 });
+  };
+
+  function showErr(t) { var e = $("err"); e.textContent = t; e.style.display = t ? "block" : "none"; if (t) e.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  $("f").onsubmit = async function (ev) {
+    ev.preventDefault(); showErr("");
+    var name = $("name").value.trim(), phone = $("phone").value.trim();
+    var y = parseInt($("ay").value || "0", 10), m = parseInt($("am").value || "0", 10);
+    if (!name) return showErr("Please enter the dog's name.");
+    if (!currentBreed()) return showErr("Please choose the dog's breed.");
+    if ($("ay").value === "" && $("am").value === "") return showErr("Please enter the dog's age (years and months).");
+    if (isNaN(y) || isNaN(m) || y < 0 || m < 0 || m > 11 || y > 30) return showErr("Please check the age. Months must be between 0 and 11.");
+    if (phone.replace(/\D/g, "").length < 10) return showErr("Please enter a valid phone number.");
+    var body = {
+      pin: PIN, theme: (document.querySelector("input[name=theme]:checked") || {}).value || "night", name: name, breed: currentBreed(), gender: $("gender").value, color: $("color").value,
+      dob: PV.dobFromYM(y, m), ownerName: $("ownerName").value, phone: phone, address: $("address").value,
+      mapLink: $("mapLink").value.trim(), lat: lat, lng: lng, notes: $("notes").value, photo: photo, vaccine: vaccine
+    };
+    var btn = $("go"); btn.disabled = true; btn.textContent = "Creating... please wait";
+    var out = null, msg = "";
+    for (var i = 0; i < 3 && !out; i++) {
+      try {
+        var r = await fetch("/api/create", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+        var j = await r.json().catch(function () { return {}; });
+        if (r.ok && j.id) out = j; else { msg = j.error || "Something went wrong."; if (r.status < 500) break; }
+        if (r.status === 401) { try { sessionStorage.removeItem("pv_pin"); } catch (e2) {} }
+      } catch (e) { msg = "No internet. Please check and try again."; }
+      if (!out) await wait(900);
+    }
+    btn.disabled = false; btn.textContent = "Create Dog ID & QR code";
+    if (!out) return showErr(msg + " Your details are still here, just tap the button again.");
+    showResult(out.id, name);
+  };
+
+  function drawQR(url) {
+    var qr = qrcode(0, "H"); qr.addData(url); qr.make();
+    var n = qr.getModuleCount(), cell = 12, pad = cell * 4, size = n * cell + pad * 2, c = $("qr");
+    c.width = size; c.height = size;
+    var x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, size, size); x.fillStyle = "#0a1f44";
+    for (var r = 0; r < n; r++) for (var k = 0; k < n; k++) if (qr.isDark(r, k)) x.fillRect(pad + k * cell, pad + r * cell, cell, cell);
+    var img = new Image();
+    img.onload = function () {
+      var s = size * 0.2, p = (size - s) / 2;
+      x.fillStyle = "#fff"; x.beginPath(); x.arc(size / 2, size / 2, s / 2 + 8, 0, 7); x.fill();
+      x.save(); x.beginPath(); x.arc(size / 2, size / 2, s / 2, 0, 7); x.clip(); x.drawImage(img, p, p, s, s); x.restore();
+    };
+    img.src = "/img/petvora_logo.png";
+  }
+
+  function showResult(id, name) {
+    var url = location.origin + "/p/" + id;
+    $("f").style.display = "none"; $("res").style.display = "block";
+    $("rname").textContent = name + "'s Pet ID"; $("rid").textContent = id;
+    $("open").href = url; drawQR(url); $("res").scrollIntoView({ behavior: "smooth" });
+    $("dl").onclick = function () {
+      var a = document.createElement("a"); a.download = "PetVora-" + id + "-QR.png"; a.href = $("qr").toDataURL("image/png");
+      document.body.appendChild(a); a.click(); a.remove();
+    };
+    $("copy").onclick = function () {
+      var b = this; (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = "Link copied"; }, function () { prompt("Copy this link:", url); });
+    };
+    $("again").onclick = function () { location.reload(); };
+  }
+})();
+</script>
+</body>
+</html>

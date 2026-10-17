@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pet ID | PetVora PawTag</title>
+<meta name="theme-color" content="#0a2a63" id="tc">
+<link rel="icon" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,500;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+/* ===== three ID designs ===== */
+html[data-theme="night"]{--fade:#0a2a63;--page:linear-gradient(180deg,#0a2a63 0%,#082050 45%,#050f26 100%);--ink:#f4f7ff;--soft:#a9bcdf;--accent:#FFD54A;--primary:#7fb0ff;
+ --chip:rgba(255,255,255,.07);--chipline:rgba(255,255,255,.2);--card:rgba(255,255,255,.06);--cardline:rgba(255,255,255,.16);--shadow:rgba(0,0,0,.45);
+ --call:linear-gradient(135deg,#7c6cff,#4f46e5);--calltext:#fff;--wa:linear-gradient(135deg,#22c55e,#15803d);--loc:linear-gradient(135deg,#38bdf8,#2563eb);--loctext:#fff;--dock:rgba(8,24,60,.78)}
+html[data-theme="ivory"]{--fade:#FBF8F2;--page:linear-gradient(180deg,#FBF8F2 0%,#F4EEE3 100%);--ink:#161616;--soft:#6c6a64;--accent:#22c55e;--primary:#16a34a;
+ --chip:#ffffff;--chipline:rgba(0,0,0,.07);--card:#ffffff;--cardline:rgba(0,0,0,.07);--shadow:rgba(60,50,30,.22);
+ --call:linear-gradient(135deg,#2b2b2b,#000);--calltext:#fff;--wa:linear-gradient(135deg,#34d36a,#16a34a);--loc:linear-gradient(135deg,#2b2b2b,#0b0b0b);--loctext:#fff;--dock:rgba(251,248,242,.88)}
+html[data-theme="gold"]{--fade:#0d0b08;--page:linear-gradient(180deg,#0d0b08 0%,#18120a 55%,#0d0b08 100%);--ink:#f8eed3;--soft:#c0a875;--accent:#E8C26A;--primary:#E8C26A;
+ --chip:rgba(232,194,106,.07);--chipline:rgba(232,194,106,.4);--card:rgba(232,194,106,.06);--cardline:rgba(232,194,106,.3);--shadow:rgba(0,0,0,.6);
+ --call:linear-gradient(135deg,#f6dc8c,#b8862b);--calltext:#1a1206;--wa:linear-gradient(135deg,#1f9d55,#0e5f32);--loc:transparent;--loctext:#E8C26A;--dock:rgba(13,11,8,.85)}
+
+body{background:var(--page);background-attachment:fixed;color:var(--ink);font-size:16px;padding-bottom:104px}
+.paws{color:var(--primary)}
+.phone{position:relative;z-index:1;width:min(480px,100%);margin:0 auto}
+.name,h2,.story q,.big{font-family:var(--display)}
+
+/* hero: the photo is always shown FULL (never cropped), in a premium frame */
+html[data-theme="night"]{--mat:6px;--matbg:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.08));--glow:rgba(127,176,255,.45);--frameedge:rgba(255,255,255,.35)}
+html[data-theme="ivory"]{--mat:9px;--matbg:#ffffff;--glow:rgba(34,197,94,.25);--frameedge:rgba(0,0,0,.06)}
+html[data-theme="gold"]{--mat:6px;--matbg:linear-gradient(145deg,#fff3c4,#E8C26A 45%,#b8862b 75%,#f6dc8c);--glow:rgba(232,194,106,.4);--frameedge:rgba(232,194,106,.6)}
+.stage{position:relative;overflow:hidden;padding:84px 18px 46px;text-align:center}
+.stage .bgblur{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(30px) saturate(1.25) brightness(.78);transform:scale(1.15);z-index:0}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,transparent,var(--fade) 96%);z-index:1;pointer-events:none}
+.stage::before{content:"";position:absolute;left:0;right:0;top:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent);z-index:1;pointer-events:none}
+.frame{--ar:.8;position:relative;z-index:2;margin:0 auto;box-sizing:border-box;width:min(100%,calc(66vh * var(--ar) + 2 * var(--mat)));padding:var(--mat);border-radius:34px;background:var(--matbg);border:1px solid var(--frameedge);box-shadow:0 30px 60px -22px rgba(0,0,0,.7),0 0 70px -10px var(--glow)}
+.frame img{display:block;width:100%;height:auto;border-radius:27px;background:rgba(0,0,0,.15)}
+.frame.logo img{width:60%;margin:30px auto;border-radius:50%;background:#fff}
+.topbar{position:absolute;z-index:5;left:14px;right:14px;top:max(14px,env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 14px 5px 5px;color:#fff;font-weight:600;font-size:.92rem}
+.brand img{width:30px;height:30px;border-radius:50%;background:#fff}
+.idchip{background:rgba(0,0,0,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:8px 14px;font-weight:600;font-size:.78rem;letter-spacing:.14em}
+.titlebox{position:relative;z-index:4;margin-top:-30px;padding:0 22px;text-align:center}
+.titlebox .tag{font-size:.7rem;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.name{font-weight:900;font-size:clamp(3.6rem,19vw,6.2rem);line-height:1;letter-spacing:-.01em;word-break:break-word;margin-top:6px}
+.name .dot{color:var(--accent)}
+html[data-theme="gold"] .name{background:linear-gradient(180deg,#fff3c4,#E8C26A 55%,#b8862b);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme="gold"] .name .dot{-webkit-text-fill-color:#E8C26A}
+.pill{display:inline-block;margin-top:14px;border:1px solid var(--chipline);background:var(--chip);border-radius:999px;padding:7px 20px;font-size:.74rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.orn.small{padding:18px 70px 0}
+/* breed card (sticker lives here, not on the photo) */
+.breedcard{display:flex;align-items:center;gap:20px;padding:20px 22px;position:relative;overflow:hidden}
+.breedcard::before{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%)}
+.bstick{flex:none;position:relative;width:112px;height:112px;border-radius:50%;border:6px solid #fff;box-shadow:0 14px 28px -8px var(--shadow),0 0 0 2px var(--accent);transform:rotate(-7deg);overflow:hidden;background:#fff}
+.bstick img{width:100%;height:100%;object-fit:cover}
+.breedcard h2{font-size:1.9rem;line-height:1.1;margin:2px 0 6px}
+.breedcard p{font-size:.88rem;color:var(--soft);letter-spacing:.04em}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* chips */
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:26px 22px 0}
+.chip{aspect-ratio:1;border-radius:50%;background:var(--chip);border:1px solid var(--chipline);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 28px -16px var(--shadow)}
+.chip:nth-child(2){transform:translateY(-14px)}
+.chip small{font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);margin-bottom:4px}
+.chip b{font-size:.98rem;font-weight:600;line-height:1.2;word-break:break-word}
+.chip b.long{font-size:.8rem}
+.agebar{text-align:center;color:var(--soft);font-size:.9rem;margin-top:6px}
+.agebar b{color:var(--accent)}
+
+.sec{padding:34px 22px 0;animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:.7rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:12px}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--accent)}
+.glass{background:var(--card);border:1px solid var(--cardline);border-radius:26px;padding:22px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 20px 40px -26px var(--shadow)}
+.story q{display:block;quotes:"\201C" "\201D";font-style:italic;font-weight:500;font-size:1.38rem;line-height:1.4}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fact{background:var(--card);border:1px solid var(--cardline);border-radius:20px;padding:14px 16px}
+.fact.wide{grid-column:1/-1}
+.fact small{display:block;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+.fact b{display:block;margin-top:3px;font-weight:600;font-size:1.05rem;word-break:break-word}
+
+/* action tiles */
+.tiles{display:grid;gap:14px}
+.tile{position:relative;display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:24px;padding:16px 18px;box-shadow:0 16px 30px -14px var(--shadow)}
+.tile svg{flex:none;width:30px;height:30px}
+.tile .ic{flex:none;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.tile strong{display:block;font-size:1.2rem;line-height:1.15}
+.tile span.s{font-size:.9rem;opacity:.9}
+.tile .tap{margin-left:auto;font-size:1.7rem;animation:hand 1.3s ease-in-out infinite}
+.tile::after{content:"";position:absolute;inset:0;border-radius:24px;animation:ring 2.2s infinite;pointer-events:none}
+.t-call{background:var(--call);color:var(--calltext)}.t-wa{background:var(--wa);color:#fff}.t-loc{background:var(--loc);color:var(--loctext)}
+html[data-theme="gold"] .t-loc{border:1.5px solid var(--accent)}
+html[data-theme="gold"] .t-call .ic{background:rgba(0,0,0,.14)}
+.t-call::after{--c:124,108,255}.t-wa::after{--c:34,197,94}.t-loc::after{--c:56,189,248}
+html[data-theme="ivory"] .t-call::after{--c:0,0,0}html[data-theme="gold"] .t-call::after{--c:232,194,106}html[data-theme="gold"] .t-loc::after{--c:232,194,106}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(var(--c),.5)}70%,100%{box-shadow:0 0 0 16px rgba(var(--c),0)}}
+@keyframes hand{50%{transform:translateY(-7px)}}
+
+.vac{width:100%;border-radius:20px;border:1px solid var(--cardline);cursor:zoom-in}
+.found{text-align:center;border:2px dashed var(--accent);border-radius:30px;padding:28px 20px;background:var(--card)}
+.found h2{font-size:2rem;margin-bottom:6px}
+.about{display:flex;gap:16px;align-items:center}
+.aimg{flex:none;width:104px;height:104px;border-radius:50%;border:5px solid #fff;box-shadow:0 8px 20px var(--shadow);transform:rotate(-8deg);overflow:hidden;background:#fff}
+.aimg img{width:100%;height:100%;object-fit:cover}
+.about h2{font-size:1.4rem;margin-bottom:4px}
+.orn{display:flex;align-items:center;gap:14px;color:var(--accent);padding:36px 40px 0}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:currentColor;opacity:.5}
+.orn svg{width:22px;height:22px}
+footer{color:var(--soft)}footer b{color:var(--ink)}
+.dock{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));z-index:30;width:min(456px,calc(100% - 24px));display:flex;gap:10px;padding:10px;border-radius:26px;background:var(--dock);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--cardline);box-shadow:0 18px 40px -10px rgba(0,0,0,.5)}
+.dock a{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:700;border-radius:18px;height:52px}
+.dock .c{flex:1;background:var(--call);color:var(--calltext)}
+.dock .w,.dock .l{width:52px;flex:none}
+.dock .w{background:var(--wa);color:#fff}.dock .l{background:var(--loc);color:var(--loctext)}
+html[data-theme="gold"] .dock .l{border:1.5px solid var(--accent)}
+.dock svg{width:24px;height:24px}
+.state{min-height:70vh;display:grid;place-items:center;text-align:center;padding:30px;color:var(--ink)}
+.state .paw{width:84px;margin:0 auto 14px;color:var(--accent);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.15);opacity:.6}}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.9);display:none;place-items:center;padding:16px}.lb.on{display:grid}.lb img{max-height:92vh;border-radius:12px}
+.btn-main{background:var(--call);color:var(--calltext)}
+@media(max-width:360px){.sticker{width:96px;height:96px}.chip b{font-size:.86rem}}
+</style>
+</head>
+<body>
+<div class="paws" id="paws" aria-hidden="true"></div>
+<div class="lb" id="lb"><img id="lbimg" alt=""></div>
+<div class="phone" id="app"><div class="state"><div><div class="paw" id="pawload"></div><p>Fetching my ID...</p></div></div></div>
+<script src="/js/common.js"></script>
+<script>
+(function () {
+  var app = document.getElementById("app");
+  document.getElementById("pawload").innerHTML = PV.PAW;
+  var seg = location.pathname.split("/").filter(Boolean);
+  var id = (seg[0] === "p" && seg[1] ? seg[1] : new URLSearchParams(location.search).get("id") || "").toUpperCase();
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  var TC = { night: "#0a2a63", ivory: "#FBF8F2", gold: "#0d0b08" };
+
+  var I = {
+    call: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.6 21 3 13.4 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>',
+    wa: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.6 1 2.8.1.2 1.8 2.8 4.5 3.9 1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3z"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>'
+  };
+
+  async function load() {
+    for (var i = 0; i < 5; i++) {
+      try {
+        var res = await fetch("/api/pet?id=" + encodeURIComponent(id), { cache: "no-store" });
+        if (res.status === 404) return { missing: true };
+        if (res.ok) { var d = await res.json(); try { localStorage.setItem("pv_" + id, JSON.stringify(d)); } catch (e) {} return { data: d }; }
+      } catch (e) {}
+      await wait(700 * (i + 1));
+    }
+    try { var c = JSON.parse(localStorage.getItem("pv_" + id)); if (c) return { data: c }; } catch (e) {}
+    return { failed: true };
+  }
+  function nextBirthday(dob) {
+    var p = dob.split("-").map(Number), n = new Date(), t = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    var b = new Date(n.getFullYear(), p[1] - 1, p[2]); if (b < t) b = new Date(n.getFullYear() + 1, p[1] - 1, p[2]);
+    return Math.round((b - t) / 864e5);
+  }
+  function pl(n, w) { return n + " " + w + (n === 1 ? "" : "s"); }
+  function aboutText(key, b) {
+    var T = {
+      golden: "Golden Retrievers are gentle, friendly and love people. I will happily walk up to strangers, so if you found me, I am not scared of you. I just need my family.",
+      labrador: "Labradors are playful, loyal and full of energy. I love water, food and people. If you found me, a little water and a kind word will keep me calm until my family arrives.",
+      beagle: "Beagles are happy, curious scent hunters. Their nose leads the way, so a Beagle that wanders off is usually just following a smell. Please call my family and I will be home for treats soon.",
+      shepherd: "German Shepherds are brave, smart and very loyal. I may be a little careful with strangers, so please stay calm, speak softly and call my family."
+    };
+    return T[key] || ("I am a " + b + " and a much-loved member of my family. If you found me, please stay with me and call my family using the button above.");
+  }
+
+  function render(r) {
+    var theme = TC[r.theme] ? r.theme : "night";
+    document.documentElement.setAttribute("data-theme", theme);
+    document.getElementById("tc").setAttribute("content", TC[theme]);
+    var breedName = r.breed || "Lovely pet", key = PV.breedKey(breedName);
+    document.title = r.name + " | Pet ID | PetVora";
+    PV.mountPaws(document.getElementById("paws"), r.id, 16);
+    var a = PV.ageFrom(r.dob), tel = PV.telLink(r.phone), map = PV.mapLink(r), bd = nextBirthday(r.dob);
+    var wa = "https://wa.me/" + tel.replace(/\D/g, "") + "?text=" + encodeURIComponent("Hello, I scanned the PetVora ID of " + r.name + ".");
+    var stickerImg = key ? PV.STICKERS[key] : (r.photo || "/img/petvora_logo.png");
+    var zoom = key ? "" : ' style="transform:scale(1.6);object-position:50% 30%"';
+    var story = r.notes || ("Lovely " + breedName + " who is loved by the whole family.");
+    var ageChip = (a.y && a.m) ? pl(a.y, "year") + "<br>" + pl(a.m, "month") : (a.y ? pl(a.y, "year") : (a.m ? pl(a.m, "month") : pl(a.d, "day")));
+    var orn = '<div class="orn">' + PV.PAW + '</div>';
+    var h = '';
+
+    var heroSrc = r.photo || (key ? PV.STICKERS[key] : "/img/petvora_logo.png");
+    var isLogo = !r.photo && !key;
+    h += '<div class="stage">';
+    if (!isLogo) h += '<img class="bgblur" src="' + esc(heroSrc) + '" alt="">';
+    h += '<div class="topbar"><div class="brand"><img src="/img/petvora_logo.png" alt="">PetVora</div><div class="idchip">' + esc(r.id) + '</div></div>';
+    h += '<div class="frame' + (isLogo ? ' logo' : '') + '" id="frame"><img id="heroimg" src="' + esc(heroSrc) + '" alt="' + esc(r.name) + '"></div>';
+    h += '</div>';
+
+    h += '<div class="titlebox rise"><div class="tag">Meet</div><h1 class="name">' + esc(r.name) + '<span class="dot">.</span></h1><span class="pill">' + esc(breedName) + '</span></div>';
+
+    h += '<div class="chips rise"><div class="chip"><small>Age</small><b>' + ageChip + '</b></div><div class="chip"><small>Colour</small><b class="' + ((r.color || "").length > 11 ? "long" : "") + '">' + esc(r.color || "-") + '</b></div><div class="chip"><small>Breed</small><b class="' + (breedName.length > 11 ? "long" : "") + '">' + esc(breedName) + '</b></div></div>';
+    h += '<p class="agebar">' + ((a.y || a.m) && a.d > 0 ? 'plus <b>' + pl(a.d, "day") + '</b> &middot; ' : '') + (bd === 0 ? 'Today is my birthday!' : 'next birthday in <b>' + pl(bd, "day") + '</b>') + '</p>';
+
+    var BT = { beagle: "Curious \u00b7 Merry \u00b7 Scent hound", golden: "Gentle \u00b7 Friendly \u00b7 Loyal", labrador: "Playful \u00b7 Loyal \u00b7 Energetic", shepherd: "Brave \u00b7 Smart \u00b7 Loyal" };
+    h += '<section class="sec"><div class="eyebrow">My breed</div><div class="glass breedcard"><div class="bstick"><img src="' + esc(stickerImg) + '" alt="' + esc(breedName) + ' sticker"' + zoom + '></div><div><div class="tag" style="font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--soft)">Breed</div><h2>' + esc(breedName) + '</h2><p>' + esc(BT[key] || "A much-loved family member") + '</p></div></div></section>';
+    h += '<section class="sec story"><div class="eyebrow">Story</div><div class="glass"><q>' + esc(story) + '</q></div></section>';
+
+    h += '<section class="sec"><div class="eyebrow">Contact my family</div><div class="tiles">';
+    h += '<a class="tile t-call" href="tel:' + esc(tel) + '"><span class="ic">' + I.call + '</span><div><strong>Call owner</strong><span class="s">Tap here to call now</span></div><span class="tap">&#128073;</span></a>';
+    h += '<a class="tile t-wa" href="' + esc(wa) + '" target="_blank" rel="noopener"><span class="ic">' + I.wa + '</span><div><strong>WhatsApp</strong><span class="s">Tap here to send a message</span></div><span class="tap">&#128073;</span></a>';
+    if (map) h += '<a class="tile t-loc" href="' + esc(map) + '" target="_blank" rel="noopener"><span class="ic">' + I.pin + '</span><div><strong>Open location</strong><span class="s">Tap here to open the map</span></div><span class="tap">&#128073;</span></a>';
+    h += '</div></section>';
+
+    h += '<section class="sec"><div class="eyebrow">Details</div><div class="facts">';
+    if (r.ownerName) h += '<div class="fact wide"><small>Owner</small><b>' + esc(r.ownerName) + '</b></div>';
+    if (r.gender) h += '<div class="fact"><small>Gender</small><b>' + esc(r.gender) + '</b></div>';
+    h += '<div class="fact"><small>Pet ID</small><b>' + esc(r.id) + '</b></div>';
+    if (r.address) h += '<div class="fact wide"><small>Home area</small><b>' + esc(r.address) + '</b></div>';
+    h += '</div></section>';
+
+    if (r.vaccine) h += '<section class="sec"><div class="eyebrow">Vaccination record</div><img class="vac" id="vac" src="' + esc(r.vaccine) + '" alt="Vaccination record"></section>';
+
+    h += orn;
+    h += '<section class="sec"><div class="found"><h2>Did you find me?</h2><p style="color:var(--soft);margin-bottom:18px">Thank you for being kind. Please stay with me and call my family now.</p><div class="tiles"><a class="tile t-call" href="tel:' + esc(tel) + '"><span class="ic">' + I.call + '</span><div><strong>Call ' + esc(r.ownerName || "my owner") + '</strong></div></a></div></div></section>';
+
+    h += '<section class="sec"><div class="glass about"><div class="aimg"><img src="' + esc(stickerImg) + '" alt=""' + zoom + '></div><div><h2>' + (r.breed ? 'I am a ' + esc(breedName) : 'About me') + '</h2><p style="font-size:.93rem;color:var(--soft)">' + esc(aboutText(key, breedName)) + '</p></div></div></section>';
+
+    h += '<footer style="text-align:center;padding:44px 20px 20px"><img src="/img/petvora_logo.png" alt="PetVora" style="width:76px;height:76px;margin:0 auto 8px;border-radius:50%;background:#fff;box-shadow:0 6px 18px var(--shadow)"><b style="font-family:var(--display);font-size:1.25rem">PetVora PawTag</b><p style="font-size:.9rem">Smarter Technology for Happier Pets</p></footer>';
+
+    h += '<nav class="dock"><a class="c" href="tel:' + esc(tel) + '">' + I.call + ' Call owner</a><a class="w" href="' + esc(wa) + '" target="_blank" rel="noopener" aria-label="WhatsApp">' + I.wa + '</a>' + (map ? '<a class="l" href="' + esc(map) + '" target="_blank" rel="noopener" aria-label="Location">' + I.pin + '</a>' : '') + '</nav>';
+    app.innerHTML = h;
+    var hi = document.getElementById("heroimg"), fr = document.getElementById("frame");
+    function fit() { if (hi && fr && hi.naturalWidth && hi.naturalHeight) fr.style.setProperty("--ar", (hi.naturalWidth / hi.naturalHeight).toFixed(4)); }
+    if (hi) { if (hi.complete) fit(); hi.onload = fit; }
+    var v = document.getElementById("vac");
+    if (v) v.onclick = function () { document.getElementById("lbimg").src = v.src; document.getElementById("lb").classList.add("on"); };
+    document.getElementById("lb").onclick = function () { this.classList.remove("on"); };
+  }
+
+  function msg(title, text, retry) {
+    app.innerHTML = '<div class="state"><div><div class="paw">' + PV.PAW + '</div><h2 style="font-size:2rem">' + title + '</h2><p style="color:var(--soft);margin:8px 0 18px">' + text + '</p>' + (retry ? '<button class="btn btn-main" id="retry">Try again</button>' : '') + '</div></div>';
+    var b = document.getElementById("retry"); if (b) b.onclick = start;
+  }
+  async function start() {
+    app.innerHTML = '<div class="state"><div><div class="paw">' + PV.PAW + '</div><p>Fetching my ID...</p></div></div>';
+    var r = await load();
+    if (r.data) render(r.data);
+    else if (r.missing) msg("This ID was not found", "Please check the QR code or the ID and try again.", false);
+    else msg("Slow internet", "We could not load the ID yet. Please check your internet and try again.", true);
+  }
+  if (!id) msg("No ID given", "Please scan a PetVora QR code.", false); else start();
+})();
+</script>
+</body>
+</html>
